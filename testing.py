@@ -2,26 +2,32 @@ import matplotlib.pyplot as plt
 import numpy as np
 import magpylib as magpy
 
-# Create a Matplotlib figure
-fig, ax = plt.subplots()
-
 # Create an observer grid in the xy-symmetry plane - using pure numpy
 grid = np.mgrid[-5:5:100j, -5:5:100j, 0:0:1j].T[0]
 X, Y, _ = np.moveaxis(grid, 2, 0)
 
+mstyle = dict(
+    mode = "color",
+    color = dict(north = "red", south = "blue"),
+
+)
 
 rod_shaped_magnet_1 = magpy.magnet.Cuboid(
 
     position = (2, 0, 0),
-    dimension = (1.5, 3, 0.5),
-    polarization = (50, 0, 0),
+    dimension = (1, 2, 0.5),
+    polarization = (0, 990, 0),
+    style_magnetization = mstyle,
+    style_magnetization_color_mode = "bicolor",
 )
 
 rod_shaped_magnet_2 = magpy.magnet.Cuboid(
 
     position = (-2, 0, 0),
-    dimension = (1.5, 3, 0.5),
-    polarization = (50, 0, 0),
+    dimension = (1, 2, 0.5),
+    polarization = (0, 990, 0),
+    style_magnetization = mstyle,
+    style_magnetization_color_mode = "bicolor",
 )
 
 magnets = rod_shaped_magnet_1 + rod_shaped_magnet_2
@@ -32,21 +38,5 @@ B = magnets.getB(grid)
 Bx, By, _ = np.moveaxis(B, 2, 0)
 normB = np.linalg.norm(B, axis=2)
 
-# Combine streamplot with contourf
-cp = ax.contourf(X, Y, normB, cmap="rainbow", levels=100)
-splt = ax.streamplot(X, Y, Bx, By, color="k", density=1.5, linewidth=1)
 
-# Add colorbar
-fig.colorbar(cp, ax=ax, label="|B| (T)")
-
-
-
-# Figure styling
-ax.set(
-    xlabel="x-position (m)",
-    ylabel="z-position (m)",
-    aspect=1,
-)
-
-plt.tight_layout()
-plt.show()
+magpy.show(magnets)
