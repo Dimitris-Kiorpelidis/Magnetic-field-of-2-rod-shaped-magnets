@@ -7,7 +7,8 @@ import magpylib as magpy
 fig, ax = plt.subplots(figsize =(7,7.5),)
 
 # Create an observer grid in the xy-symmetry plane - using pure numpy
-grid = np.mgrid[-5:5:100j, -5:5:100j, 0:0:1j].T[0]
+orio_plot = 10.0
+grid = np.mgrid[-1 * orio_plot:orio_plot:100j, -1 * orio_plot:orio_plot:100j, 0:0:1j].T[0]
 X, Y, _ = np.moveaxis(grid, 2, 0)
 
 x_1 = 2.0
@@ -66,9 +67,18 @@ ax.plot(
 
 
 def recreate1(expression):
+    global orio_plot, grid, X, Y
     if expression !=0:
-        magnets[0].move((expression,0,0))
         ax.clear()
+        current_orio_plot = orio_plot
+        if (rod_shaped_magnet_1.position[0] + float(expression) > orio_plot):
+            while(current_orio_plot + float(expression) > orio_plot):
+                orio_plot +=5
+
+            grid = np.mgrid[-1 * orio_plot:orio_plot:100j, -1 * orio_plot:orio_plot:100j, 0:0:1j].T[0]
+            X, Y, _ = np.moveaxis(grid, 2, 0)
+
+        magnets[0].move((expression,0,0))
         B = magnets.getB(grid)
         Bx, By, _ = np.moveaxis(B, 2, 0)
         normB = np.linalg.norm(B, axis=2)
@@ -102,9 +112,18 @@ def recreate1(expression):
     
 
 def recreate2(expression):
+    global orio_plot, grid, X, Y
     if expression !=0:
-        magnets[1].move((expression,0,0))
         ax.clear()
+        current_orio_plot = orio_plot
+        if (rod_shaped_magnet_2.position[0] + float(expression) > orio_plot):
+            while(current_orio_plot + float(expression) > orio_plot):
+                orio_plot +=5
+
+            grid = np.mgrid[-1 * orio_plot:orio_plot:100j, -1 * orio_plot:orio_plot:100j, 0:0:1j].T[0]
+            X, Y, _ = np.moveaxis(grid, 2, 0)
+
+        magnets[1].move((expression,0,0))
         B = magnets.getB(grid)
         Bx, By, _ = np.moveaxis(B, 2, 0)
         normB = np.linalg.norm(B, axis=2)
