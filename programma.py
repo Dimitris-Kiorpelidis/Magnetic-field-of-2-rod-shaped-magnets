@@ -11,21 +11,19 @@ orio_plot = 10.0
 grid = np.mgrid[-1 * orio_plot:orio_plot:100j, -1 * orio_plot:orio_plot:100j, 0:0:1j].T[0]
 X, Y, _ = np.moveaxis(grid, 2, 0)
 
-x_1 = 2.0
-x_2 = -2.0
-y_1 = 0.0
-y_2 = 0.0
 
 rod_shaped_magnet_1 = magpy.magnet.Cuboid(
 
-    position = (x_1, y_1, 0),
+    position = (2, 0, 0),
+    #orientation = (0),
     dimension = (0.8, 3, 0.5),
-    polarization = (0, -50, 0),
+    polarization = (0, 50, 0),
 )
 
 rod_shaped_magnet_2 = magpy.magnet.Cuboid(
 
-    position = (x_2, y_2, 0),
+    position = (-2, 0, 0),
+    #orientation = (0),
     dimension = (0.8, 3, 0.5),
     polarization = (0, 50, 0),
 )
@@ -41,6 +39,7 @@ normB = np.linalg.norm(B, axis=2)
 
 splt = ax.streamplot(X, Y, Bx, By, color="k", density=1.5, linewidth=1)
 
+
 #outline toy prwtoy magnhth
 x_sin1 = rod_shaped_magnet_1.position[0] + rod_shaped_magnet_1.dimension[0]/2
 x_plin1 = rod_shaped_magnet_1.position[0] - rod_shaped_magnet_1.dimension[0]/2
@@ -53,6 +52,15 @@ x_plin2 = rod_shaped_magnet_2.position[0] - rod_shaped_magnet_1.dimension[0]/2
 y_sin2 = rod_shaped_magnet_2.position[1] + rod_shaped_magnet_1.dimension[1]/2
 y_plin2 = rod_shaped_magnet_2.position[1] - rod_shaped_magnet_1.dimension[1]/2
 
+magnet1_north = plt.Rectangle((x_plin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "r")
+ax.add_patch(magnet1_north)
+magnet1_south = plt.Rectangle((x_plin1,y_plin1), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "b")
+ax.add_patch(magnet1_south)
+
+magnet2_north = plt.Rectangle((x_plin2, (y_sin2+y_plin2)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "r")
+ax.add_patch(magnet2_north)
+magnet2_south = plt.Rectangle((x_plin2, y_plin2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "g")
+ax.add_patch(magnet2_south)
 
 ax.plot(
     
@@ -70,10 +78,9 @@ def recreate1(expression):
     global orio_plot, grid, X, Y
     if expression !=0:
         ax.clear()
-        current_orio_plot = orio_plot
-        if (rod_shaped_magnet_1.position[0] + float(expression) > orio_plot):
-            while(current_orio_plot + float(expression) > orio_plot):
-                orio_plot +=5
+        
+        if (rod_shaped_magnet_1.position[0] + float(expression) > orio_plot) or (rod_shaped_magnet_1.position[0] + float(expression) < -1 * orio_plot): #expanding the plot if the movement exceeds the limit
+            orio_plot += (float(expression)**2)** 0.5
 
             grid = np.mgrid[-1 * orio_plot:orio_plot:100j, -1 * orio_plot:orio_plot:100j, 0:0:1j].T[0]
             X, Y, _ = np.moveaxis(grid, 2, 0)
@@ -96,6 +103,15 @@ def recreate1(expression):
         y_sin2 = rod_shaped_magnet_2.position[1] + rod_shaped_magnet_1.dimension[1]/2
         y_plin2 = rod_shaped_magnet_2.position[1] - rod_shaped_magnet_1.dimension[1]/2
 
+        magnet1_north = plt.Rectangle((x_plin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "r")
+        ax.add_patch(magnet1_north)
+        magnet1_south = plt.Rectangle((x_plin1,y_plin1), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "b")
+        ax.add_patch(magnet1_south)
+
+        magnet2_north = plt.Rectangle((x_plin2, (y_sin2+y_plin2)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "r")
+        ax.add_patch(magnet2_north)
+        magnet2_south = plt.Rectangle((x_plin2, y_plin2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "g")
+        ax.add_patch(magnet2_south)
 
         ax.plot(
             
@@ -115,10 +131,9 @@ def recreate2(expression):
     global orio_plot, grid, X, Y
     if expression !=0:
         ax.clear()
-        current_orio_plot = orio_plot
-        if (rod_shaped_magnet_2.position[0] + float(expression) > orio_plot):
-            while(current_orio_plot + float(expression) > orio_plot):
-                orio_plot +=5
+
+        if (rod_shaped_magnet_2.position[0] + float(expression) > orio_plot) or (rod_shaped_magnet_2.position[0] + float(expression) < -1 * orio_plot): #expanding the plot if the movement exceeds the limit
+            orio_plot += (float(expression)**2)** 0.5
 
             grid = np.mgrid[-1 * orio_plot:orio_plot:100j, -1 * orio_plot:orio_plot:100j, 0:0:1j].T[0]
             X, Y, _ = np.moveaxis(grid, 2, 0)
@@ -141,6 +156,15 @@ def recreate2(expression):
         y_sin2 = rod_shaped_magnet_2.position[1] + rod_shaped_magnet_1.dimension[1]/2
         y_plin2 = rod_shaped_magnet_2.position[1] - rod_shaped_magnet_1.dimension[1]/2
 
+        magnet1_north = plt.Rectangle((x_plin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "r")
+        ax.add_patch(magnet1_north)
+        magnet1_south = plt.Rectangle((x_plin1,y_plin1), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "b")
+        ax.add_patch(magnet1_south)
+
+        magnet2_north = plt.Rectangle((x_plin2, (y_sin2+y_plin2)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "r")
+        ax.add_patch(magnet2_north)
+        magnet2_south = plt.Rectangle((x_plin2, y_plin2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "g")
+        ax.add_patch(magnet2_south)
 
         ax.plot(
             
@@ -166,8 +190,8 @@ ax.set(
 
 axbox1 = plt.axes([0.8, 0.001, 0.05, 0.03])
 axbox2 = plt.axes([0.3, 0.001, 0.05, 0.03])
-text_box1 = TextBox(axbox1, 'Μετακίνηση του δεξιά μαγνήτη', initial = 0, textalignment='center', label_pad=0.2)
-text_box2 = TextBox(axbox2, 'Μετακίνηση του αριστερά μαγνήτη', initial = 0, textalignment='center', label_pad=0.2)
+text_box1 = TextBox(axbox1, 'Μετακίνηση του μπλε μαγνήτη', initial = 0, textalignment='center', label_pad=0.2)
+text_box2 = TextBox(axbox2, 'Μετακίνηση του πράσινου μαγνήτη', initial = 0, textalignment='center', label_pad=0.2)
 
 text_box1.on_submit(recreate1)
 text_box2.on_submit(recreate2)
