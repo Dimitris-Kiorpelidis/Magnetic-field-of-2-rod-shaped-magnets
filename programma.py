@@ -24,6 +24,8 @@ rod_shaped_magnet_2 = magpy.magnet.Cuboid(
 
 magnets = rod_shaped_magnet_1 + rod_shaped_magnet_2
 
+current_angle1 = 0
+current_angle2 = 0
 
 # Create an observer grid in the xy-symmetry plane - using pure numpy
 orio_plot = 10.0
@@ -46,19 +48,19 @@ y_sin1 = rod_shaped_magnet_1.position[1] + rod_shaped_magnet_1.dimension[1]/2
 y_plin1 = rod_shaped_magnet_1.position[1] - rod_shaped_magnet_1.dimension[1]/2
 
 #outline toy deyteroy magnhth
-x_sin2 = rod_shaped_magnet_2.position[0] + rod_shaped_magnet_1.dimension[0]/2
-x_plin2 = rod_shaped_magnet_2.position[0] - rod_shaped_magnet_1.dimension[0]/2
-y_sin2 = rod_shaped_magnet_2.position[1] + rod_shaped_magnet_1.dimension[1]/2
-y_plin2 = rod_shaped_magnet_2.position[1] - rod_shaped_magnet_1.dimension[1]/2
+x_sin2 = rod_shaped_magnet_2.position[0] + rod_shaped_magnet_2.dimension[0]/2
+x_plin2 = rod_shaped_magnet_2.position[0] - rod_shaped_magnet_2.dimension[0]/2
+y_sin2 = rod_shaped_magnet_2.position[1] + rod_shaped_magnet_2.dimension[1]/2
+y_plin2 = rod_shaped_magnet_2.position[1] - rod_shaped_magnet_2.dimension[1]/2
 
-magnet1_north = plt.Rectangle((x_plin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "r")
+magnet1_north = plt.Rectangle((x_plin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "r", angle = current_angle1)
 ax.add_patch(magnet1_north)
-magnet1_south = plt.Rectangle((x_plin1,y_plin1), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "b")
+magnet1_south = plt.Rectangle((x_sin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "b", angle = current_angle1 + 180)
 ax.add_patch(magnet1_south)
 
-magnet2_north = plt.Rectangle((x_plin2, (y_sin2+y_plin2)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "r")
+magnet2_north = plt.Rectangle((x_plin2, (y_sin2+y_plin2)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "r", angle = current_angle2)
 ax.add_patch(magnet2_north)
-magnet2_south = plt.Rectangle((x_plin2, y_plin2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "g")
+magnet2_south = plt.Rectangle((x_sin2, (y_sin1+y_plin1)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "g", angle = current_angle2 + 180)
 ax.add_patch(magnet2_south)
 
 ax.plot(
@@ -83,7 +85,7 @@ ax.set(
 
 def move_x_1(expression):           #Μετακίνηση του 1ου μαγνήτη στον άξονα Χ και υπολογισμός του μαγνητικού πεδίου
     global orio_plot, grid, X, Y
-    if expression !=0:
+    if float(expression) !=0:
         ax.clear()
         
         if (rod_shaped_magnet_1.position[0] + float(expression) > orio_plot) or (rod_shaped_magnet_1.position[0] + float(expression) < -1 * orio_plot): #expanding the plot if the movement exceeds the limit
@@ -106,19 +108,19 @@ def move_x_1(expression):           #Μετακίνηση του 1ου μαγν�
         y_plin1 = rod_shaped_magnet_1.position[1] - rod_shaped_magnet_1.dimension[1]/2
 
         #outline toy deyteroy magnhth
-        x_sin2 = rod_shaped_magnet_2.position[0] + rod_shaped_magnet_1.dimension[0]/2
-        x_plin2 = rod_shaped_magnet_2.position[0] - rod_shaped_magnet_1.dimension[0]/2
-        y_sin2 = rod_shaped_magnet_2.position[1] + rod_shaped_magnet_1.dimension[1]/2
-        y_plin2 = rod_shaped_magnet_2.position[1] - rod_shaped_magnet_1.dimension[1]/2
+        x_sin2 = rod_shaped_magnet_2.position[0] + rod_shaped_magnet_2.dimension[0]/2
+        x_plin2 = rod_shaped_magnet_2.position[0] - rod_shaped_magnet_2.dimension[0]/2
+        y_sin2 = rod_shaped_magnet_2.position[1] + rod_shaped_magnet_2.dimension[1]/2
+        y_plin2 = rod_shaped_magnet_2.position[1] - rod_shaped_magnet_2.dimension[1]/2
 
-        magnet1_north = plt.Rectangle((x_plin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "r")
+        magnet1_north = plt.Rectangle((x_plin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "r", angle = current_angle1)
         ax.add_patch(magnet1_north)
-        magnet1_south = plt.Rectangle((x_plin1,y_plin1), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "b")
+        magnet1_south = plt.Rectangle((x_sin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "b", angle = current_angle1 + 180)
         ax.add_patch(magnet1_south)
 
-        magnet2_north = plt.Rectangle((x_plin2, (y_sin2+y_plin2)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "r")
+        magnet2_north = plt.Rectangle((x_plin2, (y_sin2+y_plin2)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "r", angle = current_angle2)
         ax.add_patch(magnet2_north)
-        magnet2_south = plt.Rectangle((x_plin2, y_plin2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "g")
+        magnet2_south = plt.Rectangle((x_sin2, (y_sin1+y_plin1)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "g", angle = current_angle2 + 180)
         ax.add_patch(magnet2_south)
 
         ax.plot(
@@ -146,7 +148,7 @@ def move_x_1(expression):           #Μετακίνηση του 1ου μαγν�
 
 def move_x_2(expression):               #Μετακίνηση του 2ου μαγνήτη στον άξονα Χ και υπολογισμός του μαγνητικού πεδίου
     global orio_plot, grid, X, Y
-    if expression !=0:
+    if float(expression) !=0:
         ax.clear()
 
         if (rod_shaped_magnet_2.position[0] + float(expression) > orio_plot) or (rod_shaped_magnet_2.position[0] + float(expression) < -1 * orio_plot): #expanding the plot if the movement exceeds the limit
@@ -168,19 +170,19 @@ def move_x_2(expression):               #Μετακίνηση του 2ου μα�
         y_plin1 = rod_shaped_magnet_1.position[1] - rod_shaped_magnet_1.dimension[1]/2
 
         #outline toy deyteroy magnhth
-        x_sin2 = rod_shaped_magnet_2.position[0] + rod_shaped_magnet_1.dimension[0]/2
-        x_plin2 = rod_shaped_magnet_2.position[0] - rod_shaped_magnet_1.dimension[0]/2
-        y_sin2 = rod_shaped_magnet_2.position[1] + rod_shaped_magnet_1.dimension[1]/2
-        y_plin2 = rod_shaped_magnet_2.position[1] - rod_shaped_magnet_1.dimension[1]/2
+        x_sin2 = rod_shaped_magnet_2.position[0] + rod_shaped_magnet_2.dimension[0]/2
+        x_plin2 = rod_shaped_magnet_2.position[0] - rod_shaped_magnet_2.dimension[0]/2
+        y_sin2 = rod_shaped_magnet_2.position[1] + rod_shaped_magnet_2.dimension[1]/2
+        y_plin2 = rod_shaped_magnet_2.position[1] - rod_shaped_magnet_2.dimension[1]/2
 
-        magnet1_north = plt.Rectangle((x_plin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "r")
+        magnet1_north = plt.Rectangle((x_plin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "r", angle = current_angle1)
         ax.add_patch(magnet1_north)
-        magnet1_south = plt.Rectangle((x_plin1,y_plin1), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "b")
+        magnet1_south = plt.Rectangle((x_sin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "b", angle = current_angle1 + 180)
         ax.add_patch(magnet1_south)
 
-        magnet2_north = plt.Rectangle((x_plin2, (y_sin2+y_plin2)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "r")
+        magnet2_north = plt.Rectangle((x_plin2, (y_sin2+y_plin2)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "r", angle = current_angle2)
         ax.add_patch(magnet2_north)
-        magnet2_south = plt.Rectangle((x_plin2, y_plin2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "g")
+        magnet2_south = plt.Rectangle((x_sin2, (y_sin1+y_plin1)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "g", angle = current_angle2 + 180)
         ax.add_patch(magnet2_south)
 
         ax.plot(
@@ -204,63 +206,13 @@ def move_x_2(expression):               #Μετακίνηση του 2ου μα�
         plt.show()
 
 def rotate_1(expression):       #rotation of 1st magnet
-    if expression !=0:
+    if float(expression) != 0:
+
+        global current_angle1
+
         ax.clear()
-        orientation = R.from_euler('z', float(expression), degrees = True)
-        rod_shaped_magnet_1.rotate(orientation)
 
-        B = magnets.getB(grid)
-        Bx, By, _ = np.moveaxis(B, 2, 0)
-        normB = np.linalg.norm(B, axis=2)
-
-        splt = ax.streamplot(X, Y, Bx, By, color="k", density=1.5, linewidth=1)
-        #outline toy prwtoy magnhth
-        x_sin1 = (rod_shaped_magnet_1.position[0] + rod_shaped_magnet_1.dimension[0]/2)
-        x_plin1 = rod_shaped_magnet_1.position[0] - rod_shaped_magnet_1.dimension[0]/2
-        y_sin1 = rod_shaped_magnet_1.position[1] + rod_shaped_magnet_1.dimension[1]/2
-        y_plin1 = rod_shaped_magnet_1.position[1] - rod_shaped_magnet_1.dimension[1]/2
-
-        #outline toy deyteroy magnhth
-        x_sin2 = rod_shaped_magnet_2.position[0] + rod_shaped_magnet_1.dimension[0]/2
-        x_plin2 = rod_shaped_magnet_2.position[0] - rod_shaped_magnet_1.dimension[0]/2
-        y_sin2 = rod_shaped_magnet_2.position[1] + rod_shaped_magnet_1.dimension[1]/2
-        y_plin2 = rod_shaped_magnet_2.position[1] - rod_shaped_magnet_1.dimension[1]/2
-
-        magnet1_north = plt.Rectangle((x_plin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "r")
-        ax.add_patch(magnet1_north)
-        magnet1_south = plt.Rectangle((x_plin1,y_plin1), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "b")
-        ax.add_patch(magnet1_south)
-
-        magnet2_north = plt.Rectangle((x_plin2, (y_sin2+y_plin2)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "r")
-        ax.add_patch(magnet2_north)
-        magnet2_south = plt.Rectangle((x_plin2, y_plin2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "g")
-        ax.add_patch(magnet2_south)
-
-        ax.plot(
-            
-            [x_sin1, x_sin1, x_plin1, x_plin1, x_sin1],
-            [y_sin1, y_plin1, y_plin1, y_sin1, y_sin1],
-            
-            [x_sin2, x_sin2, x_plin2, x_plin2, x_sin2],
-            [y_sin2, y_plin2, y_plin2, y_sin2, y_sin2],
-
-            lw = 2,
-        )
-
-        ax.set(
-        title = "Μαγνητικό πεδίο 2 μαγνητών (2D)",
-        xlabel="x (m)",
-        ylabel="y (m)",
-        aspect=1,
-        )
-        
-        plt.show()
-
-def rotate_2(expression):       #rotation of 2nd magnet
-    if expression !=0:
-        ax.clear()
-        rotation = R.from_euler('z', float(expression), degrees = True)
-        magnets[1].rotate(rotation)
+        rod_shaped_magnet_1.rotate_from_angax(angle=float(expression), axis='z')
         B = magnets.getB(grid)
         Bx, By, _ = np.moveaxis(B, 2, 0)
         normB = np.linalg.norm(B, axis=2)
@@ -273,19 +225,19 @@ def rotate_2(expression):       #rotation of 2nd magnet
         y_plin1 = rod_shaped_magnet_1.position[1] - rod_shaped_magnet_1.dimension[1]/2
 
         #outline toy deyteroy magnhth
-        x_sin2 = rod_shaped_magnet_2.position[0] + rod_shaped_magnet_1.dimension[0]/2
-        x_plin2 = rod_shaped_magnet_2.position[0] - rod_shaped_magnet_1.dimension[0]/2
-        y_sin2 = rod_shaped_magnet_2.position[1] + rod_shaped_magnet_1.dimension[1]/2
-        y_plin2 = rod_shaped_magnet_2.position[1] - rod_shaped_magnet_1.dimension[1]/2
+        x_sin2 = rod_shaped_magnet_2.position[0] + rod_shaped_magnet_2.dimension[0]/2
+        x_plin2 = rod_shaped_magnet_2.position[0] - rod_shaped_magnet_2.dimension[0]/2
+        y_sin2 = rod_shaped_magnet_2.position[1] + rod_shaped_magnet_2.dimension[1]/2
+        y_plin2 = rod_shaped_magnet_2.position[1] - rod_shaped_magnet_2.dimension[1]/2
 
-        magnet1_north = plt.Rectangle((x_plin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "r")
+        magnet1_north = plt.Rectangle((x_plin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "r", angle = float(expression) + current_angle1)
         ax.add_patch(magnet1_north)
-        magnet1_south = plt.Rectangle((x_plin1,y_plin1), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "b")
+        magnet1_south = plt.Rectangle((x_sin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "b", angle = float(expression) + current_angle1 + 180)
         ax.add_patch(magnet1_south)
 
-        magnet2_north = plt.Rectangle((x_plin2, (y_sin2+y_plin2)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "r")
+        magnet2_north = plt.Rectangle((x_plin2, (y_sin2+y_plin2)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "r", angle = current_angle2)
         ax.add_patch(magnet2_north)
-        magnet2_south = plt.Rectangle((x_plin2, y_plin2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "g")
+        magnet2_south = plt.Rectangle((x_sin2, (y_sin1+y_plin1)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "g", angle = current_angle2 + 180)
         ax.add_patch(magnet2_south)
 
         ax.plot(
@@ -306,6 +258,65 @@ def rotate_2(expression):       #rotation of 2nd magnet
         aspect=1,
         )
         
+        current_angle1 += float(expression)
+
+        plt.show()
+
+def rotate_2(expression):       #rotation of 2nd magnet
+    if float(expression) !=0:
+
+        global current_angle2
+        
+        ax.clear()
+
+        rod_shaped_magnet_2.rotate_from_angax(angle=float(expression), axis='z')
+        B = magnets.getB(grid)
+        Bx, By, _ = np.moveaxis(B, 2, 0)
+        normB = np.linalg.norm(B, axis=2)
+
+        splt = ax.streamplot(X, Y, Bx, By, color="k", density=1.5, linewidth=1)
+        #outline toy prwtoy magnhth
+        x_sin1 = rod_shaped_magnet_1.position[0] + rod_shaped_magnet_1.dimension[0]/2
+        x_plin1 = rod_shaped_magnet_1.position[0] - rod_shaped_magnet_1.dimension[0]/2
+        y_sin1 = rod_shaped_magnet_1.position[1] + rod_shaped_magnet_1.dimension[1]/2
+        y_plin1 = rod_shaped_magnet_1.position[1] - rod_shaped_magnet_1.dimension[1]/2
+
+        #outline toy deyteroy magnhth
+        x_sin2 = rod_shaped_magnet_2.position[0] + rod_shaped_magnet_2.dimension[0]/2
+        x_plin2 = rod_shaped_magnet_2.position[0] - rod_shaped_magnet_2.dimension[0]/2
+        y_sin2 = rod_shaped_magnet_2.position[1] + rod_shaped_magnet_2.dimension[1]/2
+        y_plin2 = rod_shaped_magnet_2.position[1] - rod_shaped_magnet_2.dimension[1]/2
+
+        magnet1_north = plt.Rectangle((x_plin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "r", angle = current_angle1)
+        ax.add_patch(magnet1_north)
+        magnet1_south = plt.Rectangle((x_sin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "b", angle = current_angle1 + 180)
+        ax.add_patch(magnet1_south)
+
+        magnet2_north = plt.Rectangle((x_plin2, (y_sin2+y_plin2)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "r", angle = float(expression) + current_angle2)
+        ax.add_patch(magnet2_north)
+        magnet2_south = plt.Rectangle((x_sin2, (y_sin1+y_plin1)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "g", angle = float(expression) + current_angle2 + 180)
+        ax.add_patch(magnet2_south)
+
+        ax.plot(
+            
+            [x_sin1, x_sin1, x_plin1, x_plin1, x_sin1],
+            [y_sin1, y_plin1, y_plin1, y_sin1, y_sin1],
+            
+            [x_sin2, x_sin2, x_plin2, x_plin2, x_sin2],
+            [y_sin2, y_plin2, y_plin2, y_sin2, y_sin2],
+
+            lw = 2,
+        )
+
+        ax.set(
+        title = "Μαγνητικό πεδίο 2 μαγνητών (2D)",
+        xlabel="x (m)",
+        ylabel="y (m)",
+        aspect=1,
+        )
+        
+        current_angle2 += float(expression)
+
         plt.show()
 
 axbox_x_1 = plt.axes([0.94, 0.045, 0.05, 0.03])
