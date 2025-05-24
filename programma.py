@@ -2,20 +2,15 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import TextBox
 import numpy as np
 import magpylib as magpy
+from scipy.spatial.transform import Rotation as R
 
 # Create a Matplotlib figure
 fig, ax = plt.subplots(figsize =(7,7.5),)
-
-# Create an observer grid in the xy-symmetry plane - using pure numpy
-orio_plot = 10.0
-grid = np.mgrid[-1 * orio_plot:orio_plot:100j, -1 * orio_plot:orio_plot:100j, 0:0:1j].T[0]
-X, Y, _ = np.moveaxis(grid, 2, 0)
 
 
 rod_shaped_magnet_1 = magpy.magnet.Cuboid(
 
     position = (2, 0, 0),
-    #orientation = (0),
     dimension = (0.8, 3, 0.5),
     polarization = (0, 50, 0),
 )
@@ -23,14 +18,18 @@ rod_shaped_magnet_1 = magpy.magnet.Cuboid(
 rod_shaped_magnet_2 = magpy.magnet.Cuboid(
 
     position = (-2, 0, 0),
-    #orientation = (0),
     dimension = (0.8, 3, 0.5),
     polarization = (0, 50, 0),
 )
 
-
-
 magnets = rod_shaped_magnet_1 + rod_shaped_magnet_2
+
+
+# Create an observer grid in the xy-symmetry plane - using pure numpy
+orio_plot = 10.0
+grid = np.mgrid[-1 * orio_plot:orio_plot:100j, -1 * orio_plot:orio_plot:100j, 0:0:1j].T[0]
+X, Y, _ = np.moveaxis(grid, 2, 0)
+
 
 # Compute magnetic field on grid - using the functional interface
 B = magnets.getB(grid)
@@ -73,8 +72,16 @@ ax.plot(
     lw = 2,
 )
 
+# Figure styling
+ax.set(
+    title = "Μαγνητικό πεδίο 2 μαγνητών (2D)",
+    xlabel="x (m)",
+    ylabel="y (m)",
+    aspect=1,
+)
 
-def recreate1(expression):
+
+def move_x_1(expression):           #Μετακίνηση του 1ου μαγνήτη στον άξονα Χ και υπολογισμός του μαγνητικού πεδίου
     global orio_plot, grid, X, Y
     if expression !=0:
         ax.clear()
@@ -84,6 +91,7 @@ def recreate1(expression):
 
             grid = np.mgrid[-1 * orio_plot:orio_plot:100j, -1 * orio_plot:orio_plot:100j, 0:0:1j].T[0]
             X, Y, _ = np.moveaxis(grid, 2, 0)
+        
 
         magnets[0].move((expression,0,0))
         B = magnets.getB(grid)
@@ -123,11 +131,20 @@ def recreate1(expression):
 
             lw = 2,
         )
+
+        # Figure styling
+        ax.set(
+        title = "Μαγνητικό πεδίο 2 μαγνητών (2D)",
+        xlabel="x (m)",
+        ylabel="y (m)",
+        aspect=1,
+        )
+
         plt.show()
 
     
 
-def recreate2(expression):
+def move_x_2(expression):               #Μετακίνηση του 2ου μαγνήτη στον άξονα Χ και υπολογισμός του μαγνητικού πεδίου
     global orio_plot, grid, X, Y
     if expression !=0:
         ax.clear()
@@ -176,24 +193,135 @@ def recreate2(expression):
 
             lw = 2,
         )
+
+        ax.set(
+        title = "Μαγνητικό πεδίο 2 μαγνητών (2D)",
+        xlabel="x (m)",
+        ylabel="y (m)",
+        aspect=1,
+        )
+        
         plt.show()
-    
-    
-# Figure styling
-ax.set(
-    title = "Μαγνητικό πεδίο 2 μαγνητών (2D)",
-    xlabel="x (m)",
-    ylabel="y (m)",
-    aspect=1,
-)
+
+def rotate_1(expression):       #rotation of 1st magnet
+    if expression !=0:
+        ax.clear()
+        orientation = R.from_euler('z', float(expression), degrees = True)
+        rod_shaped_magnet_1.rotate(orientation)
+
+        B = magnets.getB(grid)
+        Bx, By, _ = np.moveaxis(B, 2, 0)
+        normB = np.linalg.norm(B, axis=2)
+
+        splt = ax.streamplot(X, Y, Bx, By, color="k", density=1.5, linewidth=1)
+        #outline toy prwtoy magnhth
+        x_sin1 = (rod_shaped_magnet_1.position[0] + rod_shaped_magnet_1.dimension[0]/2)
+        x_plin1 = rod_shaped_magnet_1.position[0] - rod_shaped_magnet_1.dimension[0]/2
+        y_sin1 = rod_shaped_magnet_1.position[1] + rod_shaped_magnet_1.dimension[1]/2
+        y_plin1 = rod_shaped_magnet_1.position[1] - rod_shaped_magnet_1.dimension[1]/2
+
+        #outline toy deyteroy magnhth
+        x_sin2 = rod_shaped_magnet_2.position[0] + rod_shaped_magnet_1.dimension[0]/2
+        x_plin2 = rod_shaped_magnet_2.position[0] - rod_shaped_magnet_1.dimension[0]/2
+        y_sin2 = rod_shaped_magnet_2.position[1] + rod_shaped_magnet_1.dimension[1]/2
+        y_plin2 = rod_shaped_magnet_2.position[1] - rod_shaped_magnet_1.dimension[1]/2
+
+        magnet1_north = plt.Rectangle((x_plin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "r")
+        ax.add_patch(magnet1_north)
+        magnet1_south = plt.Rectangle((x_plin1,y_plin1), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "b")
+        ax.add_patch(magnet1_south)
+
+        magnet2_north = plt.Rectangle((x_plin2, (y_sin2+y_plin2)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "r")
+        ax.add_patch(magnet2_north)
+        magnet2_south = plt.Rectangle((x_plin2, y_plin2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "g")
+        ax.add_patch(magnet2_south)
+
+        ax.plot(
+            
+            [x_sin1, x_sin1, x_plin1, x_plin1, x_sin1],
+            [y_sin1, y_plin1, y_plin1, y_sin1, y_sin1],
+            
+            [x_sin2, x_sin2, x_plin2, x_plin2, x_sin2],
+            [y_sin2, y_plin2, y_plin2, y_sin2, y_sin2],
+
+            lw = 2,
+        )
+
+        ax.set(
+        title = "Μαγνητικό πεδίο 2 μαγνητών (2D)",
+        xlabel="x (m)",
+        ylabel="y (m)",
+        aspect=1,
+        )
+        
+        plt.show()
+
+def rotate_2(expression):       #rotation of 2nd magnet
+    if expression !=0:
+        ax.clear()
+        rotation = R.from_euler('z', float(expression), degrees = True)
+        magnets[1].rotate(rotation)
+        B = magnets.getB(grid)
+        Bx, By, _ = np.moveaxis(B, 2, 0)
+        normB = np.linalg.norm(B, axis=2)
+
+        splt = ax.streamplot(X, Y, Bx, By, color="k", density=1.5, linewidth=1)
+        #outline toy prwtoy magnhth
+        x_sin1 = rod_shaped_magnet_1.position[0] + rod_shaped_magnet_1.dimension[0]/2
+        x_plin1 = rod_shaped_magnet_1.position[0] - rod_shaped_magnet_1.dimension[0]/2
+        y_sin1 = rod_shaped_magnet_1.position[1] + rod_shaped_magnet_1.dimension[1]/2
+        y_plin1 = rod_shaped_magnet_1.position[1] - rod_shaped_magnet_1.dimension[1]/2
+
+        #outline toy deyteroy magnhth
+        x_sin2 = rod_shaped_magnet_2.position[0] + rod_shaped_magnet_1.dimension[0]/2
+        x_plin2 = rod_shaped_magnet_2.position[0] - rod_shaped_magnet_1.dimension[0]/2
+        y_sin2 = rod_shaped_magnet_2.position[1] + rod_shaped_magnet_1.dimension[1]/2
+        y_plin2 = rod_shaped_magnet_2.position[1] - rod_shaped_magnet_1.dimension[1]/2
+
+        magnet1_north = plt.Rectangle((x_plin1,(y_sin1+y_plin1)/2), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "r")
+        ax.add_patch(magnet1_north)
+        magnet1_south = plt.Rectangle((x_plin1,y_plin1), rod_shaped_magnet_1.dimension[0], rod_shaped_magnet_1.dimension[1]/2, color = "b")
+        ax.add_patch(magnet1_south)
+
+        magnet2_north = plt.Rectangle((x_plin2, (y_sin2+y_plin2)/2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "r")
+        ax.add_patch(magnet2_north)
+        magnet2_south = plt.Rectangle((x_plin2, y_plin2), rod_shaped_magnet_2.dimension[0], rod_shaped_magnet_2.dimension[1]/2, color = "g")
+        ax.add_patch(magnet2_south)
+
+        ax.plot(
+            
+            [x_sin1, x_sin1, x_plin1, x_plin1, x_sin1],
+            [y_sin1, y_plin1, y_plin1, y_sin1, y_sin1],
+            
+            [x_sin2, x_sin2, x_plin2, x_plin2, x_sin2],
+            [y_sin2, y_plin2, y_plin2, y_sin2, y_sin2],
+
+            lw = 2,
+        )
+
+        ax.set(
+        title = "Μαγνητικό πεδίο 2 μαγνητών (2D)",
+        xlabel="x (m)",
+        ylabel="y (m)",
+        aspect=1,
+        )
+        
+        plt.show()
+
+axbox_x_1 = plt.axes([0.94, 0.045, 0.05, 0.03])
+axbox_x_2 = plt.axes([0.44, 0.045, 0.05, 0.03])
+axbox_rotate_1 = plt.axes([0.94, 0.001, 0.05, 0.03])
+axbox_rotate_2 = plt.axes([0.44, 0.001, 0.05, 0.03])
+
+text_box_x_1 = TextBox(axbox_x_1, 'Μετακίνηση του μπλε μαγνήτη', initial = 0, textalignment='center', label_pad=0.2)
+text_box_x_2 = TextBox(axbox_x_2, 'Μετακίνηση του πράσινου μαγνήτη', initial = 0, textalignment='center', label_pad=0.2)
+text_box_rotate_1 = TextBox(axbox_rotate_1, 'Περιστορφή του μπλε μαγνήτη (μύρες)', initial = 0, textalignment='center', label_pad=0.2)
+text_box_rotate_2 = TextBox(axbox_rotate_2, 'Περιστορφή του πράσινου μαγνήτη (μύρες)', initial = 0, textalignment='center', label_pad=0.2)
 
 
-axbox1 = plt.axes([0.8, 0.001, 0.05, 0.03])
-axbox2 = plt.axes([0.3, 0.001, 0.05, 0.03])
-text_box1 = TextBox(axbox1, 'Μετακίνηση του μπλε μαγνήτη', initial = 0, textalignment='center', label_pad=0.2)
-text_box2 = TextBox(axbox2, 'Μετακίνηση του πράσινου μαγνήτη', initial = 0, textalignment='center', label_pad=0.2)
-
-text_box1.on_submit(recreate1)
-text_box2.on_submit(recreate2)
+text_box_x_1.on_submit(move_x_1)
+text_box_x_2.on_submit(move_x_2)
+text_box_rotate_1.on_submit(rotate_1)
+text_box_rotate_2.on_submit(rotate_2)
 
 plt.show()
