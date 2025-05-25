@@ -12,14 +12,14 @@ rod_shaped_magnet_1 = magpy.magnet.Cuboid(
 
     position = (2, 0, 0),
     dimension = (0.8, 3, 0.5),
-    polarization = (0, 50, 0),
+    polarization = (0, 100, 0),
 )
 
 rod_shaped_magnet_2 = magpy.magnet.Cuboid(
 
     position = (-2, 0, 0),
     dimension = (0.8, 3, 0.5),
-    polarization = (0, 50, 0),
+    polarization = (0, 100, 0),
 )
 
 magnets = rod_shaped_magnet_1 + rod_shaped_magnet_2
