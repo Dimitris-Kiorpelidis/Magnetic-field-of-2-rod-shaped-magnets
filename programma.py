@@ -154,6 +154,7 @@ def move_x_1(expression):           #Μετακίνηση του 1ου μαγν�
         aspect=1,
         )
 
+        text_box_x_1.set_val("0")
         plt.show()
 
     
@@ -221,6 +222,7 @@ def move_x_2(expression):               #Μετακίνηση του 2ου μα�
         aspect=1,
         )
         
+        text_box_x_2.set_val("0")
         plt.show()
 
 def rotate_1(expression):       #rotation of 1st magnet
@@ -284,6 +286,7 @@ def rotate_1(expression):       #rotation of 1st magnet
 
         current_angle1 += float(expression)
 
+        text_box_rotate_1.set_val("0")
         plt.show()
 
 def rotate_2(expression):       #rotation of 2nd magnet
@@ -347,6 +350,7 @@ def rotate_2(expression):       #rotation of 2nd magnet
         
         current_angle2 += float(expression)
 
+        text_box_rotate_2.set_val("0")
         plt.show()
 
 axbox_x_1 = plt.axes([0.94, 0.045, 0.05, 0.03])
